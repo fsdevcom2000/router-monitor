@@ -96,7 +96,7 @@ A dedicated WebSocket channel streams server logs in real time.
 Код
 
 ```
-routers-mikrotik/
+routers-monitor/
 ├── app/
 │   ├── __init__.py
 │   ├── main.py              # FastAPI entry point, lifespan
@@ -395,7 +395,7 @@ Logs are printed to console and available via WebSocket `/ws/logs`. Logging leve
 ## Структура проекта
 
 ```
-routers-mikrotik/
+routers-monitor/
 ├── app/
 │   ├── __init__.py
 │   ├── main.py              # Точка входа FastAPI, lifespan

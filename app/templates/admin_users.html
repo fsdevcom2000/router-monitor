@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>Routers | Users</title>
+<link rel="stylesheet" href="{{ url_for('static', path='style/admin-style.css') }}">
+</head>
+<body>
+<div class="container">
+  <h1>Users List</h1>
+  <div class="nav-links">
+    <a href="/admin/users/add">Add User</a>
+    <a href="/admin/routers">Routers</a>
+    <a href="/">Monitoring</a>
+    <a href="/logout">Logout</a>
+
+  </div>
+
+  <table>
+    <tr>
+      <th>Username</th>
+      <th>Role</th>
+      <th>Actions</th>
+    </tr>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.username }}</td>
+      <td>{{ u.role }}</td>
+      <td>
+        <a href="/admin/users/edit/{{ u.username }}" class="button-link">Edit</a>
+        <form action="/admin/users/delete/{{ u.username }}" method="post" style="display:inline">
+          <button type="submit" onclick="return confirm('Delete user {{ u.username }}?')" class="btn btn-danger">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+<script src="{{ url_for('static', path='js/theme.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+/* === Reset & Base === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+    padding: 20px;
+}
+
+/* === Theme Variables === */
+:root {
+    --bg-color: #f5f6fa;
+    --text-color: #333;
+    --card-bg: #fff;
+    --primary-color: #484848;
+    --primary-hover: #2f2f2f;
+    --border-color: #ccc;
+    --error-color: #e74c3c;
+    --btn-danger: #f44336;
+    --btn-danger-hover: #c0392b;
+}
+
+body.dark-mode {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --card-bg: #1e1e1e;
+    --primary-color: #5dade2;
+    --primary-hover: #2e86c1;
+    --border-color: #555;
+    --error-color: #f08080;
+    --btn-danger: #ff6666;
+    --btn-danger-hover: #e60000;
+}
+
+/* === Card Container === */
+.card, .container {
+    background-color: var(--card-bg);
+    padding: 30px 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 500px;
+}
+
+/* === Headings === */
+h1, h2 {
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+h1 { font-size: 1.8rem; }
+h2 { font-size: 1.6rem; }
+
+/* === Navigation Links === */
+.nav-links {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.nav-links a {
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    background-color: var(--primary-color);
+    color: #fff;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.nav-links a:hover {
+    background-color: var(--primary-hover);
+}
+
+/* === Table === */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    font-weight: 600;
+}
+
+.on { color: #4caf50; font-weight: bold; }
+.off { color: #f44336; font-weight: bold; }
+
+.btn {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    background-color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.btn:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-danger {
+    background-color: var(--btn-danger);
+}
+
+.btn-danger:hover {
+    background-color: var(--btn-danger-hover);
+}
+
+/* === Form Inputs === */
+input[type="text"],
+input[type="password"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+/* === Checkbox Styling === */
+input[type="checkbox"] {
+    width: auto;
+    margin-right: 8px;
+    accent-color: var(--primary-color);
+}
+
+/* === Hint Text === */
+.hint {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    opacity: 0.7;
+    margin-top: 4px;
+}
+
+/* === Buttons in Form === */
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: var(--primary-color);
+    color: #fff;
+    transition: background-color 0.2s;
+}
+
+button[type="submit"]:hover {
+    background-color: var(--primary-hover);
+}
+
+/* === Responsive === */
+@media (max-width: 480px) {
+    .card, .container {
+        padding: 20px 15px;
+        max-width: 95%;
+    }
+
+    h1, h2 {
+        font-size: 1.4rem;
+    }
+
+    input[type="text"], input[type="password"], input[type="number"], select, button {
+        font-size: 0.95rem;
+    }
+
+    .nav-links {
+        flex-direction: column;
+    }
+}

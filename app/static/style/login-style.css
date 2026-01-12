@@ -1,0 +1,192 @@
+/* === Reset & base === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* === Theme variables === */
+:root {
+    --bg-color: #f5f6fa;
+    --text-color: #333;
+    --card-bg: #fff;
+    --primary-color: #5dade2;
+    --primary-hover: #2e86c1;
+    --border-color: #ccc;
+    --error-color: #e74c3c;
+}
+
+body.dark-mode {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --card-bg: #1e1e1e;
+    --primary-color: #5dade2;
+    --primary-hover: #2e86c1;
+    --border-color: #555;
+    --error-color: #f08080;
+}
+
+/* === Card container === */
+.card {
+    background-color: var(--card-bg);
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+}
+
+.card .header {
+    display: flex;
+    align-items: center;   
+    justify-content: center; 
+    gap: 12px;             
+    margin-bottom: 20px;
+}
+
+.card .header .logotype {
+    object-fit: contain;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.logotype {
+    height: 48px;
+    width: 48px;
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+@media (prefers-color-scheme: light) {
+    .mikrotik-logo {
+        filter: none;
+    }
+}
+
+
+@media (prefers-color-scheme: dark) {
+    .mikrotik-logo {
+        filter: invert(1) brightness(1.1);
+    }
+}
+
+/* === Headings === */
+h2 {
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* === Inputs === */
+input[type="text"],
+input[name="username"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus,
+input[name="username"],
+input[type="password"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+/* === Buttons === */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: var(--primary-hover);
+}
+
+/* === Error messages === */
+.error {
+    color: var(--error-color);
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+/* === Responsive === */
+@media (max-width: 400px) {
+    .card {
+        padding: 30px 20px;
+        max-width: 90%;
+    }
+}
+
+
+.subtitle {
+    color: #6c757d; 
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: -15px 0 25px 0; 
+    font-weight: 300; 
+    letter-spacing: 0.2px;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+body.dark-mode .subtitle {
+    color: #adb5bd; 
+    opacity: 0.9;
+}
+
+
+h2 {
+    margin-bottom: 5px; 
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+
+.card .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.card .header .logotype {
+    margin-bottom: 15px;
+}
+

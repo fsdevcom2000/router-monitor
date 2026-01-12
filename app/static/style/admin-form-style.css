@@ -1,0 +1,253 @@
+/* === Reset & base === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* === Theme variables === */
+:root {
+    --bg-color: #f5f6fa;
+    --text-color: #333;
+    --card-bg: #fff;
+    --primary-color: #484848;
+    --primary-hover: #2f2f2f;
+    --border-color: #ccc;
+    --border-radius: 12px;
+    --link-color: #007bff;
+    --link-hover: #0056b3;
+}
+
+body.dark-mode {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --card-bg: #1e1e1e;
+    --primary-color: #5dade2;
+    --primary-hover: #2e86c1;
+    --border-color: #555;
+    --link-color: #3390ff;
+    --link-hover: #1a73e8;
+}
+
+/* === Card container === */
+.card {
+    background-color: var(--card-bg);
+    padding: 40px 30px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+}
+
+/* === Headings === */
+h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* === Navigation links === */
+.nav-links {
+    margin-bottom: 25px;
+}
+
+.nav-links a {
+    color: var(--link-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover {
+    color: var(--link-hover);
+}
+
+/* === Inputs === */
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[name="name"],
+input[name="host"],
+input[name="username"],
+input[name="password"],
+input[name="port"] {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(52,152,219,0.4);
+}
+
+/* === Checkbox styling === */
+input[type="checkbox"] {
+    width: auto;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+/* === Buttons === */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: var(--primary-hover);
+}
+
+/* === Responsive adjustments === */
+@media (max-width: 500px) {
+    .card {
+        padding: 30px 20px;
+        max-width: 90%;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    button {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+}
+
+/* === Custom checkbox === */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+
+.checkbox-container input[type="checkbox"] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+
+.checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--card-bg);
+    transition: background-color 0.2s, border-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.checkbox-custom::after {
+    content: "";
+    width: 6px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+
+.checkbox-container input[type="checkbox"]:checked + .checkbox-custom {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.checkbox-container input[type="checkbox"]:checked + .checkbox-custom::after {
+    opacity: 1;
+}
+
+/* hover */
+.checkbox-container:hover .checkbox-custom {
+    border-color: var(--primary-hover);
+}
+
+
+body.dark-mode .checkbox-custom {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .checkbox-container input[type="checkbox"]:checked + .checkbox-custom {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* password field and hint if edit */
+.password-field {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start; 
+    margin-bottom: 20px;
+    gap: 4px; 
+}
+
+.password-field input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.password-field input[type="password"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+.password-hint {
+    font-size: 0.85rem;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+
+body.dark-mode .password-hint {
+    color: var(--text-color);
+}

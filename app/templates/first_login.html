@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>Routers | Setup</title>
+<link rel="stylesheet" href="{{ url_for('static', path='style/login-style.css') }}">
+</head>
+<body>
+<div class="card">
+    <div class="header">
+        <img src="{{ url_for('static', path='images/dark-logo.png') }}" alt="Logo" class="logotype">
+        <h2>Setup</h2>
+        <p class="subtitle">Please create the first administrator account.</p>
+    </div>
+
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="post" id="createUserForm">
+        <input name="username" placeholder="Username" required autofocus>
+        <input name="password" type="password" placeholder="Password" required id="password1">
+        <input name="password_confirm" type="password" placeholder="Confirm Password" required id="password2">
+        <button type="submit">Create Admin Account</button>
+    </form>
+</div>
+
+<script src="{{ url_for('static', path='js/setup.js') }}"></script>
+<script src="{{ url_for('static', path='js/theme.js') }}"></script>
+</body>
+</html>

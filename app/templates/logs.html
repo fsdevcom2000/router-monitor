@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', path='style/logs-style.css') }}">
+    <title>Routers | Server Logs</title>
+</head>
+<body>
+    <header>
+        <h1>Server Logs</h1>
+        <button id="clearLog">Clear</button>
+    </header>
+
+    <main>
+        <div id="log" class="log"></div>
+    </main>
+<script src="{{ url_for('static', path='js/theme.js') }}"></script>
+<script src="{{ url_for('static', path='js/logs.js') }}"></script>
+</body>
+</html>

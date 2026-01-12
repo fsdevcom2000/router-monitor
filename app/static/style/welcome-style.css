@@ -1,0 +1,100 @@
+/* === Reset & base === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* === Theme variables === */
+:root {
+    --bg-color: #f5f6fa;
+    --text-color: #333;
+    --card-bg: #fff;
+    --link-bg: #007bff;
+    --link-hover: #0056b3;
+    --border-radius: 12px;
+}
+
+body.dark-mode {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --card-bg: #1e1e1e;
+    --link-bg: #3390ff;
+    --link-hover: #1a73e8;
+}
+
+/* === Card container === */
+.card {
+    background-color: var(--card-bg);
+    padding: 40px 30px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+p {
+    margin-bottom: 25px;
+    font-size: 1.1rem;
+}
+
+/* === Navigation links as buttons === */
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.nav-links a {
+    display: block;
+    padding: 12px 0;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #fff;
+    background-color: var(--link-bg);
+    transition: background-color 0.2s;
+}
+
+.nav-links a:hover {
+    background-color: var(--link-hover);
+}
+
+/* === Responsive adjustments === */
+@media (max-width: 480px) {
+    .card {
+        padding: 30px 20px;
+        max-width: 90%;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    p {
+        font-size: 1rem;
+    }
+
+    .nav-links a {
+        padding: 10px 0;
+    }
+}

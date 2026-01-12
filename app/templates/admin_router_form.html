@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>{{ action }} Router</title>
+<link rel="stylesheet" href="{{ url_for('static', path='style/admin-form-style.css') }}">
+</head>
+<body>
+<div class="card">
+    <h2>{{ action }} Router</h2>
+    <div class="nav-links">
+        <a href="/admin/routers">Back to list</a>
+    </div>
+
+    <form method="post">
+        <p><input name="name" value="{{ router.name if router else '' }}" placeholder="Name" {% if action=='Edit' %}readonly{% endif %} required></p>
+        <p><input name="host" value="{{ router.host if router else '' }}" placeholder="Host" required></p>
+        <p><input name="username" value="{{ router.username if router else '' }}" placeholder="Username" required></p>
+        <p class="password-field">
+            <input name="password" type="password" placeholder="Password">
+            {% if action=='Edit' %}
+                <small class="password-hint">(leave empty to keep current)</small>
+            {% endif %}
+        </p>
+
+        <p><input name="port" type="number" value="{{ router.port if router else 8728 }}" placeholder="Port"></p>
+        <p>
+          <label class="checkbox-container">
+            <input type="checkbox" name="enabled" value="1"
+              {% if router and router.enabled %}checked{% endif %}
+              {% if not router %}checked{% endif %}>
+            <span class="checkbox-custom"></span>
+            Enabled
+          </label>
+        </p>
+        <p><button type="submit">{{ action }}</button></p>
+    </form>
+</div>
+<script src="{{ url_for('static', path='js/theme.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SSH Terminal</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/xterm/css/xterm.css" />
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: #000;
+        }
+
+        #terminal {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+<div id="terminal"></div>
+
+<script src="https://unpkg.com/xterm/lib/xterm.js"></script>
+<script src="https://unpkg.com/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
+
+<script>
+    const term = new Terminal({
+        cursorBlink: true,
+        fontFamily: "monospace",
+        fontSize: 14,
+        theme: {
+            background: "#000000",
+            foreground: "#ffffff"
+        }
+    });
+
+    const fitAddon = new FitAddon.FitAddon();
+    term.loadAddon(fitAddon);
+
+    term.open(document.getElementById('terminal'));
+    fitAddon.fit(); // ← растягиваем терминал
+
+    // Support window resize
+    window.addEventListener("resize", () => fitAddon.fit());
+
+    const ws = new WebSocket(`ws://${location.host}/ws/ssh/{{ router_name }}`);
+
+    ws.onmessage = e => term.write(e.data);
+    term.onData(data => ws.send(data));
+</script>
+
+</body>
+</html>

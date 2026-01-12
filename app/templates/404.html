@@ -1,0 +1,78 @@
+<!-- templates/404.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Page Not Found</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style/login-style.css') }}">
+    <style>
+        /* Дополнительные стили для 404 страницы */
+        .error-code {
+            font-size: 5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 20px 0;
+        }
+
+        .error-message {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: var(--text-color);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 20px;
+            border: 2px solid var(--primary-color);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .error-details {
+            color: #777;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        body.dark-mode .error-details {
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <img src="{{ url_for('static', path='images/dark-logo.png') }}" alt="Logo" class="logotype">
+            <div class="error-code">404</div>
+            <h2>Page Not Found</h2>
+            <p class="subtitle">The page you are looking for doesn't exist or has been moved.</p>
+        </div>
+
+        <div class="error-message">
+            Oops! We can't seem to find the page you're looking for.
+        </div>
+
+        <div class="error-details">
+            Requested URL: {{ request.url.path }}
+        </div>
+
+        <div style="margin-top: 30px;">
+            <a href="/" class="back-link">Go to Homepage</a>
+            <a href="javascript:history.back()" class="back-link" style="margin-left: 15px;">Go Back</a>
+        </div>
+    </div>
+<script src="{{ url_for('static', path='js/theme.js') }}"></script>
+</body>
+</html>

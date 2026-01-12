@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Routers | Welcome</title>
+<link rel="stylesheet" href="{{ url_for('static', path='style/welcome-style.css') }}">
+</head>
+<body>
+<div class="card welcome-card">
+    <h1>Routers</h1>
+    <p>Welcome, {{ request.session.get("user") }}</p>
+    <div class="nav-links">
+        <a href="/">Monitoring</a>
+        {% if is_admin %}
+            <a href="/admin/routers">Admin panel</a>
+        {% endif %}
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+<script src="{{ url_for('static', path='js/theme.js') }}"></script>
+</body>
+</html>

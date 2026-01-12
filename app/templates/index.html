@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Routers | MikroTik</title>
+  <link rel="icon" href="{{ url_for('static', path='images/favicon.ico') }}" type="image/x-icon">
+  <link rel="stylesheet" href="{{ url_for('static', path='style/main-style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <img src="{{ url_for('static', path='images/dark-logo.png') }}" class="mikrotik-logo">
+      <h1>Routers <span class="subtitle">MikroTik</span></h1>
+    </div>
+    <div class="topbar-right">
+      <input type="text" id="search" class="search-input" placeholder="Search">
+      <button id="toggle-all" class="icon-btn" title="Collapse All / Expand All">▾▾</button>
+      {% if is_admin %}
+        <a href="/admin/routers" class="topbar-btn">Admin</a>
+      {% endif %}
+      <a href="/logout" class="topbar-btn logout-btn">Logout</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="empty" hidden>
+    <p>No routers found</p>
+  </div>
+  <div id="routers-container"></div>
+</main>
+
+<script>
+  window.ROUTER_NAMES = {{ router_names | tojson }};
+</script>
+<script src="{{ url_for('static', path='js/app.js') }}"></script>
+<div id="server-alert" class="server-alert hidden">
+  The monitoring server has stopped.
+</div>
+</body>
+</html>
+

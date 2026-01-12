@@ -1,4 +1,5 @@
-# English / # Russian
+English/Russian
+
 # **Routers | MikroTik — Web Monitoring & Management System**
 <img width="1919" height="1079" alt="image-1" src="https://github.com/user-attachments/assets/1c4067a8-97fb-486d-8349-0bae7e33c603" />
 
@@ -318,6 +319,8 @@ For each router, the dashboard displays:
 ### **Logging**
 
 Logs are printed to console and available via WebSocket `/ws/logs`. Logging level is configured when starting uvicorn.
+
+# Russian
 
 # Routers | MikroTik - Web Monitoring & Management System
 

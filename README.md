@@ -188,7 +188,7 @@ uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-5000} --workers 2 --log-level
 - Log in with the created credentials.
     
 
-## **📊 Dashboard Features**
+## **Dashboard Features**
 
 For each router, the dashboard displays:
 
@@ -472,7 +472,7 @@ uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-5000} --workers 2 --log-level
 3. Войдите с созданными учетными данными
     
 
-## 📊 Возможности дашборда
+## Возможности дашборда
 
 Для каждого роутера отображается:
 

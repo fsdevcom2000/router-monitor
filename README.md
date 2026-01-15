@@ -1,7 +1,7 @@
-English/Russian
+<img src="https://github.com/user-attachments/assets/4f71aac0-74ea-4f50-b78c-b963894409a0" width="64" height="64" style="float: left; margin-right: 10px;">
 
-# **Routers | MikroTik — Web Monitoring & Management System**
-<img width="1919" height="1079" alt="image-1" src="https://github.com/user-attachments/assets/1c4067a8-97fb-486d-8349-0bae7e33c603" />
+# Routers | MikroTik — Web Monitoring & Management System
+<img width="1443" height="1062" alt="Screenshot 2026-01-15 122028" src="https://github.com/user-attachments/assets/5d509f3c-d9a5-4f61-b3bc-5ffc58117d1b" />
 
 ## **About the Project**
 

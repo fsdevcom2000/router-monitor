@@ -1,4 +1,6 @@
 # app/main.py
+# FastAPI entry point, lifespan
+
 import asyncio
 import os
 from contextlib import asynccontextmanager

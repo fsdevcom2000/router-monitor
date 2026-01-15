@@ -1,3 +1,6 @@
+# app/log_stream.py
+# WebSocket handler for logs
+
 import asyncio
 import logging
 

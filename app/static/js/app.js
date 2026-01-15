@@ -41,6 +41,13 @@ function createCard(name) {
     </div>
     <hr class="card-divider">
     <div class="card-actions">
+       <button class="card-btn log"
+              data-action="log"
+              data-router="${name}"
+              title="Open router's Log (last 100 lines)">
+        log
+      </button>
+
       <button class="card-btn webfig"
               data-action="webfig"
               data-router="${name}"
@@ -87,6 +94,10 @@ container.addEventListener("click", (e) => {
   if (action === "terminal") {
     openTerminal(router);
   }
+  if (action === "log") {
+    openLog(router);
+  }
+
 });
 /* toggle */
 container.addEventListener("click", (e) => {
@@ -137,6 +148,7 @@ async function connectWS() {
             if (d.webfig_host) card.dataset.webfigHost = d.webfig_host;
             if (d.webfig_proto) card.dataset.webfigProto = d.webfig_proto;
             if (d.webfig_port) card.dataset.webfigPort = d.webfig_port;
+            if (d.log) card.dataset.log = JSON.stringify(d.log);
         }
         set(`ipv4-${name}`, d.ipv4);
         set(`board-${name}`, d.board);
@@ -255,5 +267,18 @@ async function openWebfig(router) {
 function openTerminal(router) {
     window.open(`/router/${router}/terminal`, "_blank");
 }
+
+function openLog(router) {
+    const card = document.querySelector(`[data-name="${router.toLowerCase()}"]`);
+    if (!card) {
+        alert("Router's card not found");
+        return;
+    }
+
+    const router_log = card.dataset.log;
+    // here you can either open a separate page, or a modal, or pass router_log
+    window.open(`/router/${router}/log`, "_blank");
+}
+
 
 

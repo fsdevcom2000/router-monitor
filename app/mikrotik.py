@@ -381,19 +381,61 @@ class RouterAPI:
         return iface, speed
 
     def get_logs(self, count=10):
-        self.ensure_connected()
-        if not self.api:
-            return []
 
         try:
-            # Get all logs
-            logs = list(self.api(cmd="/log/print"))
+            self.ensure_connected()
+            if not self.api:
+                return []
 
-            # Get last N
-            return logs[-count:]
+            # --- 1. MEMORY LOG ---
+            try:
+                logs = list(self.api(cmd="/log/print"))
+                if isinstance(logs, list) and logs:
+                    return logs[-count:]
+            except Exception:
+                pass
 
-        except Exception as e:
-            return [{"error": str(e)}]
+            # --- 2. DISK LOG ---
+            try:
+                files = list(self.api(cmd="/file/print"))
+                log_files = [
+                    f for f in files
+                    if "log" in str(f.get("name", "")).lower()
+                       and "usb" not in str(f.get("name", "")).lower()
+                ]
+
+                if not log_files:
+                    return []
+
+                log_file = log_files[-1]
+                name = log_file.get("name")
+                if not name:
+                    return []
+
+                content = self.api(
+                    cmd="/file/get",
+                    **{"numbers": name, "value-name": "contents"}
+                )
+
+                # RouterOS v6/v7 → {'contents': b'...'}
+                if isinstance(content, dict):
+                    content = content.get("contents", b"")
+
+                if isinstance(content, bytes):
+                    content = content.decode(errors="ignore")
+
+                if not isinstance(content, str):
+                    return []
+
+                lines = content.split("\n")
+                return lines[-count:]
+
+            except Exception:
+                return []
+
+        except Exception:
+            return []
+
 
     def get_webfig_port(self):
         self.ensure_connected()
@@ -425,8 +467,8 @@ class RouterAPI:
             ipv4 = self.get_external_ipv4()
             iface, speed = self.get_wan_info()
             proto, port = self.get_webfig_port() or ("http", 80)
-
             return {
+                "status": "Yes",
                 "board": resource.get("board-name"),
                 "version": resource.get("version"),
                 "uptime": format_uptime(resource.get("uptime", "")),
@@ -445,7 +487,6 @@ class RouterAPI:
                 "webfig_host": str(self.host),
                 "webfig_proto": proto,
                 "webfig_port": port,
-                "status": "Yes",
             }
 
 

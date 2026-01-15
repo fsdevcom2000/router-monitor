@@ -1,0 +1,209 @@
+/* === Common style === */
+body {
+    margin: 0;
+    background: #0f0f11;
+    color: #e5e5e5;
+    font-family: "JetBrains Mono", Consolas, monospace;
+
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* === Top Bar === */
+.header {
+    background: #1a1a1d;
+    padding: 14px 22px;
+    font-size: 18px;
+    font-weight: 600;
+    border-bottom: 1px solid #2a2a2d;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* === Toolbar === */
+.toolbar {
+    background: #141416;
+    padding: 12px 22px;
+    border-bottom: 1px solid #2a2a2d;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+
+    position: sticky;
+    top: 60px; /* высота header */
+    z-index: 90;
+}
+
+/* === Search === */
+.search-box {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #3a3a3d;
+    background: #1c1c1f;
+    color: #e5e5e5;
+    width: 240px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.search-box:focus {
+    outline: none;
+    border-color: #4ec9b0;
+    background: #222225;
+}
+
+/* === Checkbox === */
+.toolbar label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    color: #cfcfcf;
+}
+
+.toolbar input[type="checkbox"] {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #555;
+    border-radius: 4px;
+    background: #1c1c1f;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.toolbar input[type="checkbox"]:checked {
+    background: #4ec9b0;
+    border-color: #4ec9b0;
+}
+
+.toolbar input[type="checkbox"]:checked::after {
+    content: "✔";
+    color: #000;
+    font-size: 12px;
+    position: relative;
+    left: 2px;
+    top: -1px;
+}
+
+/* === Buttons === */
+/* Base button */
+.btn {
+    background: #2b2b2e;
+    border: 1px solid #3d3d40;
+    padding: 7px 14px;
+    color: #e5e5e5;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+/* Blue Button Save */
+.btn-save {
+    background: #0078d4; /* Microsoft blue */
+    border-color: #0a84ff;
+    color: white;
+}
+
+.btn-save:hover {
+    background: #0a84ff;
+    border-color: #4ec9b0;
+}
+
+/* Red Button Clear */
+.btn-clear {
+    background: #d32f2f;
+    border-color: #ff5252;
+    color: white;
+}
+
+.btn-clear:hover {
+    background: #ff5252;
+    border-color: #ff867c;
+}
+
+
+/* === Logs === */
+#log-output {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px;
+    white-space: pre-wrap;
+    line-height: 1.45;
+    font-size: 14px;
+    /* ← Firefox support */
+    scrollbar-width: thin;
+    scrollbar-color: #3a3a3d #1a1a1d;
+}
+
+#log-output::-webkit-scrollbar {
+    width: 10px;
+}
+
+#log-output::-webkit-scrollbar-track {
+    background: #1a1a1d; /* фон трека */
+}
+
+#log-output::-webkit-scrollbar-thumb {
+    background: #3a3a3d;
+    border-radius: 6px;
+    border: 2px solid #1a1a1d;
+}
+
+#log-output::-webkit-scrollbar-thumb:hover {
+    background: #4ec9b0;
+}
+
+/* === Tags === */
+.tag {
+    display: inline-block;
+    padding: 2px 6px;
+    margin-right: 4px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #000;
+}
+
+.tag-system { background: #4ec9b0; }
+.tag-info { background: #9cdcfe; }
+.tag-warning { background: #dcdcaa; }
+.tag-error { background: #f44747; }
+.tag-account { background: #c586c0; }
+.tag-wireless { background: #ce9178; }
+.tag-dhcp { background: #ffb86c; }
+.tag-script { background: #ffb86c; }
+.tag-firewall { background: #ffb86c; }
+.tag-interface { background: #ffb86c; }
+
+/* ===  IP и MAC === */
+.ip { color: #4ec9b0; font-weight: bold; }
+.mac { color: #c586c0; font-weight: bold; }
+
+/* === Extra-info (collapsible) === */
+details {
+    margin-top: 4px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    border-left: 2px solid #333;
+}
+
+details summary {
+    cursor: pointer;
+    color: #9cdcfe;
+}

@@ -8,9 +8,9 @@ from .notifications import send_telegram, fmt_down, fmt_up, fmt_reconnect_alert
 
 logger = logging.getLogger(__name__)
 
+ROUTER_APIS: Dict[str, object] = {}
 STATUS_CACHE: Dict[str, dict] = {}
 CACHE_INTERVAL = 5
-ROUTER_APIS: Dict[str, object] = {}
 TIMEOUT_PER_ROUTER = 5
 
 _cache_lock = asyncio.Lock()
@@ -146,8 +146,8 @@ async def update_status_periodically(shutdown_event: asyncio.Event):
                 if isinstance(reconnects, int):
                     last_alert = ROUTER_RECONNECT_ALERT.get(r_name, 0)
 
-                    # send an alert every +50 reconnects
-                    if reconnects >= last_alert + 50:
+                    # send an alert every +10 reconnects
+                    if reconnects >= last_alert + 10:
                         await send_telegram(fmt_reconnect_alert(r_name, reconnects))
                         ROUTER_RECONNECT_ALERT[r_name] = reconnects
 

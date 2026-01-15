@@ -1,7 +1,11 @@
+# app/main.py
+# All endpoints and templates
+
 import asyncio
 import secrets
 import time
 import paramiko
+import json
 
 from fastapi import Request, Form
 from fastapi import WebSocket
@@ -13,6 +17,7 @@ from .db import get_user, verify_password
 from .db import list_users, add_user, update_user_role, update_user_password, delete_user, users_count
 from .log_stream import log_queue, connected_log_clients
 from .state import router_manager
+from .state import ROUTER_APIS
 
 # one-time WS tokens
 WS_TOKENS = {}
@@ -97,15 +102,16 @@ def register_pages(app, templates):
         request.session["role"] = user["role"]
         return RedirectResponse("/welcome", status_code=HTTP_302_FOUND)
 
+
     # --- Welcome ---
     @app.get("/welcome", response_class=HTMLResponse)
     async def admin(request: Request):
         if not request.session.get("user"):
             return RedirectResponse("/login", status_code=HTTP_302_FOUND)
-        # Проверяем роль пользователя
+        # Check user role
         is_admin = request.session.get("role") == "admin"
         return templates.TemplateResponse("welcome.html",{"request": request, "is_admin": is_admin})
-        # return templates.TemplateResponse("welcome.html", {"request": request})
+
 
     @app.get("/logout")
     async def logout(request: Request):
@@ -264,8 +270,7 @@ def register_pages(app, templates):
     async def delete_user_post(request: Request, username: str):
         if request.session.get("role") != "admin":
             return JSONResponse({"error": "Unauthorized"}, status_code=401)
-        users = users_count()
-        if users > 1:  # If only one user
+        if users_count() > 1:
             delete_user(username)
         return RedirectResponse("/admin/users", status_code=HTTP_302_FOUND)
 
@@ -343,6 +348,39 @@ def register_pages(app, templates):
                 ssh.close()
             except:
                 pass
+
+
+    # --- Router Log ---
+    @app.get("/router/{name}/log")
+    async def router_terminal(name: str, request: Request):
+        if not request.session.get("user") or request.session.get("role") != "admin":
+            return RedirectResponse("/login", status_code=HTTP_302_FOUND)
+        return templates.TemplateResponse(
+            "router_log.html",
+            {"request": request, "router_name": name}
+        )
+
+
+    @app.websocket("/ws/log/{router}")
+    async def ws_log(ws: WebSocket, router: str):
+        await ws.accept()
+
+        api = ROUTER_APIS.get(router)
+        if not api:
+            await ws.send_text(json.dumps({"error": "Router API not connected"}))
+            await ws.close()
+            return
+
+        try:
+            logs = api.get_logs(100)  # if you need more lines, just increase
+            for line in logs:
+                await ws.send_text(json.dumps(line))
+
+        except Exception as e:
+            await ws.send_text(json.dumps({"error": str(e)}))
+
+        finally:
+            await ws.close()
 
 
     # --- 404 Page Not Found ---

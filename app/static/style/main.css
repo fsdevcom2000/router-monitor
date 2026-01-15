@@ -1,0 +1,407 @@
+:root {
+  --bg: #f0f0f0;
+  --text: #000;
+  --card-bg: #fff;
+  --border: rgba(0,0,0,0.15);
+  --card-title-size: 1.1rem;
+  --card-text-size: 0.9rem;
+  --card-label-size: 0.9rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121212;
+    --text: #f0f0f0;
+    --card-bg: #1e1e1e;
+    --border: rgba(255,255,255,0.15);
+    .card-btn:hover {
+    background: rgba(255,255,255,0.08);
+  }
+  .card-divider {
+    border-top-color: rgba(255,255,255,0.12);
+  }
+  }
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* topbar */
+.topbar {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800; /* or 900 */
+  position: sticky;
+  top: 0;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+}
+
+.topbar-inner {
+  max-width: 1400px;
+  margin: auto;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mikrotik-logo {
+  height: 32px;
+}
+
+.subtitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  opacity: .6;
+  font-size: .85rem;
+}
+
+.search-input {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(0,0,0,.08);
+  color: inherit;
+}
+
+/* main */
+main {
+  max-width: 1400px;
+  margin: auto;
+  padding: 32px 24px;
+}
+
+#routers-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px,1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+/* card */
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  overflow: hidden;
+  height: fit-content;
+  font-size: var(--card-text-size);
+}
+
+/* header */
+.card-header {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: var(--card-title-size);
+}
+
+.card-toggle {
+  transition: transform 0.25s ease;
+}
+
+.card:not(.collapsed) .card-toggle {
+  transform: rotate(0deg);
+}
+
+.card.collapsed .card-toggle {
+  transform: rotate(-90deg);
+}
+
+/* body */
+.card-body {
+  padding: 0 20px;
+  overflow: hidden;
+
+  max-height: 0;
+  opacity: 0;
+
+  transition:
+    max-height 0.35s ease,
+    opacity 0.25s ease;
+}
+
+/* not collapsed card */
+.card:not(.collapsed) .card-body {
+  max-height: 1000px; /* quite a large value */
+  opacity: 1;
+  padding-bottom: 20px;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  margin-bottom: 12px;   
+  padding-top: 48px 0 0;
+  padding-right: 16px;
+}
+
+.card-divider {
+  border: none;
+  border-top: 1px solid rgba(0,0,0,0.12); 
+  margin: 12px 0 8px; 
+}
+
+.card-divider,
+.card-actions {
+  display: flex;           
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+
+  opacity: 0;              
+  pointer-events: none;    
+  height: 0;               
+  margin: 0;               
+  transition: opacity 0.2s ease, height 0.2s ease;
+}
+
+.card:not(.collapsed) .card-divider,
+.card:not(.collapsed) .card-actions {
+  opacity: 1;
+  pointer-events: auto;
+  height: auto;            
+  margin: 12px 0 8px;     
+}
+
+
+.card-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 30px;
+  height: 25px;
+
+  border: 1px solid var(--border);
+  border-radius: 6px;
+
+  background: transparent;
+  color: inherit;
+
+  font-size: 0.9rem;
+  cursor: pointer;
+
+  opacity: 0.65;
+  transition:
+    background 0.15s ease,
+    opacity 0.15s ease,
+    transform 0.1s ease;
+}
+
+.card-btn:hover {
+  opacity: 1;
+  background: rgba(0,0,0,0.06);
+  transform: translateY(-1px);
+}
+
+.card-btn.webfig {
+  color: #ffa000;
+}
+
+.card-btn.terminal {
+  color: #f44336;
+}
+
+.card-btn.log {
+  color: #706f6f;
+}
+
+.card-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* metrics */
+.metric {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px 0;
+}
+
+.label { font-weight: 600; }
+
+.value.low { color: #4caf50; }
+.value.normal { color: #ffa000; }
+.value.high { color: #f44336; }
+
+/* status */
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 6px;
+}
+
+.status-indicator.online {
+  background: #00c853;
+  box-shadow: 0 0 6px #00c853;
+  animation: pulse 1.5s infinite;
+}
+
+.status-indicator.offline {
+  background: #d50000;
+  box-shadow: 0 0 8px #d50000;
+  animation: blink 1s infinite;
+}
+
+.status-indicator.wait {
+  background: #f1c232;
+  box-shadow: 0 0 8px #f1c232;
+  animation: blink 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.1rem;
+  padding: 6px 8px;
+  margin-left: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.icon-btn:hover {
+  opacity: 1;
+  background: rgba(0,0,0,0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  .icon-btn:hover {
+    background: rgba(255,255,255,0.08);
+  }
+}
+
+.mikrotik-logo {
+  height: 32px;
+  width: auto;
+  flex-shrink: 0;
+}
+
+/* light theme — original icon (dark) */
+@media (prefers-color-scheme: light) {
+  .mikrotik-logo {
+    filter: none;
+  }
+}
+
+/* dark theme — inversion to white icon */
+@media (prefers-color-scheme: dark) {
+  .mikrotik-logo {
+    filter: invert(1) brightness(1.1);
+  }
+}
+
+.topbar-btn {
+  display: inline-block;
+  padding: 6px 14px;
+  margin-left: 8px;
+  border-radius: 6px;
+  background-color: var(--link-bg, #007bff);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.topbar-btn:hover {
+  background-color: var(--link-hover, #0056b3);
+  opacity: 0.9;
+}
+
+.logout-btn {
+  background-color: #f44336;
+}
+
+.logout-btn:hover {
+  background-color: #d32f2f;
+}
+
+
+@media (prefers-color-scheme: dark) {
+  .topbar-btn {
+    background-color: #3390ff;
+  }
+
+  .topbar-btn:hover {
+    background-color: #1a73e8;
+  }
+
+  .logout-btn {
+    background-color: #ff6666;
+  }
+
+  .logout-btn:hover {
+    background-color: #e53935;
+  }
+}
+
+
+@media (max-width: 600px) {
+  .topbar-right {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .topbar-btn {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+}
+
+.server-alert {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #ff4d4d;
+  color: white;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+.server-alert.hidden {
+  opacity: 0;
+  pointer-events: none;
+}

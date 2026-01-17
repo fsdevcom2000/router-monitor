@@ -1,3 +1,5 @@
+import { alertModal, confirmModal } from "./modal.js";
+import { showToast } from "./toast.js";
 
 const routerNames = window.ROUTER_NAMES || [];
 const container = document.getElementById("routers-container");
@@ -41,19 +43,19 @@ function createCard(name) {
     </div>
     <hr class="card-divider">
     <div class="card-actions">
-       <button class="card-btn log"
+        <button class="card-btn log"
               data-action="log"
               data-router="${name}"
               title="Open router's Log (last 100 lines)">
         log
-      </button>
+        </button>
 
-      <button class="card-btn webfig"
+        <button class="card-btn webfig"
               data-action="webfig"
               data-router="${name}"
               title="Webfig">
         webfig
-      </button>
+        </button>
 
       <button class="card-btn terminal"
               data-action="terminal"
@@ -214,53 +216,32 @@ function set(id, val, suf = "") {
   document.getElementById(id).textContent = val != null ? val + suf : "--";
 }
 
-async function openWebfig(router) {
+
+function openWebfig(router) {
     const card = document.querySelector(`[data-name="${router.toLowerCase()}"]`);
     if (!card) {
-        alert("Router's card not found");
+        showToast("Router's card not found", "error");
         return;
     }
 
     const host = card.dataset.webfigHost;
-    const proto = card.dataset.webfigProto || "http";
-    const port = card.dataset.webfigPort || (proto === "https" ? "443" : "80");
+    const proto = (card.dataset.webfigProto || "http").toLowerCase();
+    const port = card.dataset.webfigPort;
 
     if (!host) {
-        alert("WebFig not accessible!");
+        showToast("WebFig not available!", "warning");
         return;
     }
 
-    // Create URL
-    const makeUrl = (p, prt) => `${p}://${host}:${prt}/webfig/`;
-
-    const primaryUrl = makeUrl(proto, port);
-    const fallbackUrl = proto === "https"
-        ? makeUrl("http", "80")
-        : makeUrl("https", "443");
-
-    // Check URL
-    async function check(url) {
-        try {
-            const r = await fetch(url, { method: "HEAD", mode: "no-cors" });
-            return true; // no-cors will not return state, if no error - host alive
-        } catch {
-            return false;
-        }
-    }
-
-    // 1. Trying main URL
-    if (await check(primaryUrl)) {
-        window.open(primaryUrl, "_blank");
+    if (!port) {
+        // if backend not send port — try without
+        const urlNoPort = `${proto}://${host}/webfig/`;
+        window.open(urlNoPort, "_blank");
         return;
     }
 
-    // 2. Trying fallback
-    if (await check(fallbackUrl)) {
-        window.open(fallbackUrl, "_blank");
-        return;
-    }
-
-    alert("No access to Webfig via HTTP and HTTPS");
+    const url = `${proto}://${host}:${port}/webfig/`;
+    window.open(url, "_blank");
 }
 
 
@@ -271,14 +252,16 @@ function openTerminal(router) {
 function openLog(router) {
     const card = document.querySelector(`[data-name="${router.toLowerCase()}"]`);
     if (!card) {
-        alert("Router's card not found");
+        showToast("Router's card not found", "error")
         return;
     }
 
     const router_log = card.dataset.log;
     // here you can either open a separate page, or a modal, or pass router_log
     window.open(`/router/${router}/log`, "_blank");
+//    showToast("Not available!", "warning")
 }
+
 
 
 

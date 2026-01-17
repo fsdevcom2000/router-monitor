@@ -15,9 +15,10 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.websockets import WebSocketDisconnect
 
 from .state import update_status_periodically, connected_websockets, router_manager
+from .notifications import start_telegram_worker, stop_telegram_worker
 from .pages import WS_TOKENS, register_pages
 from .db import init_db
-from .notifications import start_telegram_worker, stop_telegram_worker
+
 
 
 # --- Paths ---
@@ -47,7 +48,7 @@ async def lifespan(app: App) -> AsyncIterator[None]:
         update_status_periodically(app.state.shutdown_event)
     )
     app.state.background_tasks.append(task)
-    # start Telegram worker
+    # Start Telegram Worker
     start_telegram_worker()
 
     try:
@@ -69,7 +70,7 @@ async def lifespan(app: App) -> AsyncIterator[None]:
 
         await asyncio.gather(*app.state.background_tasks, return_exceptions=True)
         await router_manager.shutdown()
-        # stop telegram worker
+        # Stop Telegram Worker
         await stop_telegram_worker()
 
 

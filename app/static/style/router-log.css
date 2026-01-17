@@ -3,7 +3,7 @@ body {
     margin: 0;
     background: #0f0f11;
     color: #e5e5e5;
-    font-family: "JetBrains Mono", Consolas, monospace;
+    font-family: "Inter", sans-serif, monospace;
 
     display: flex;
     flex-direction: column;
@@ -206,4 +206,31 @@ details {
 details summary {
     cursor: pointer;
     color: #9cdcfe;
+}
+
+.loader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    font-size: 14px;
+    color: #888;
+    justify-content: center;
+}
+
+.loader.hidden {
+    display: none;
+}
+
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(0,0,0,0.15);
+    border-top-color: #4a90e2;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }

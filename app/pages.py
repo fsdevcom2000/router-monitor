@@ -57,6 +57,7 @@ def register_pages(app, templates):
             return templates.TemplateResponse("first_login.html", {"request": request, "error": None})
         return templates.TemplateResponse("login.html", {"request": request})
 
+
     @app.post("/login")
     async def login(request: Request,
     username: str = Form(...),
@@ -91,7 +92,7 @@ def register_pages(app, templates):
             add_user(username, password, "admin")
             request.session["user"] = username
             request.session["role"] = "admin"
-            return RedirectResponse("/welcome", status_code=HTTP_302_FOUND)
+            return RedirectResponse("/admin/routers", status_code=HTTP_302_FOUND)
 
         # Normal login
         user = get_user(username)
@@ -118,6 +119,7 @@ def register_pages(app, templates):
         request.session.clear()
         return RedirectResponse("/login", status_code=HTTP_302_FOUND)
 
+
     @app.websocket("/ws/logs")
     async def logs_ws(ws: WebSocket):
         await ws.accept()
@@ -130,6 +132,7 @@ def register_pages(app, templates):
             pass
         finally:
             connected_log_clients.remove(ws)
+
 
     # --- Logs ---
     @app.get("/admin/logs", response_class=HTMLResponse)
@@ -152,6 +155,7 @@ def register_pages(app, templates):
         WS_TOKENS[token] = (user, time.time())
         return {"token": token}
 
+
     # --- Reload routers ---
     @app.post("/admin/reload-routers")
     async def reload_routers(request: Request):
@@ -159,6 +163,7 @@ def register_pages(app, templates):
             return JSONResponse({"error": "Unauthorized"}, status_code=401)
         await router_manager.reload()
         return {"status": "ok"}
+
 
     # --- Routers List ---
     @app.get("/admin/routers", response_class=HTMLResponse)
@@ -168,6 +173,7 @@ def register_pages(app, templates):
         routers = await router_manager.get_routers()
         return templates.TemplateResponse("admin_routers.html", {"request": request, "routers": routers.values()})
 
+
     # --- Add New Router ---
     @app.get("/admin/routers/add", response_class=HTMLResponse)
     async def add_router_page(request: Request):
@@ -175,13 +181,17 @@ def register_pages(app, templates):
             return RedirectResponse("/login", status_code=HTTP_302_FOUND)
         return templates.TemplateResponse("admin_router_form.html", {"request": request, "action": "Add"})
 
+
     @app.post("/admin/routers/add")
     async def add_router(request: Request, name: str = Form(...), host: str = Form(...),
                          username: str = Form(...), password: str = Form(...), port: int = Form(8728)):
         if not request.session.get("user") or request.session.get("role") != "admin":
             return JSONResponse({"error": "Unauthorized"}, status_code=401)
-        await router_manager.add_router(name, host, username, password, port, enabled=1)
+        result = await router_manager.add_router(name, host, username, password, port, enabled=1)
+        if result is False:
+            return JSONResponse({"error": "Router with this name already exists"}, status_code=400)
         return RedirectResponse("/admin/routers", status_code=HTTP_302_FOUND)
+
 
     # --- Edit Router ---
     @app.get("/admin/routers/edit/{name}", response_class=HTMLResponse)
@@ -194,6 +204,7 @@ def register_pages(app, templates):
             return RedirectResponse("/admin/routers", status_code=HTTP_302_FOUND)
         return templates.TemplateResponse("admin_router_form.html", {"request": request, "router": router, "action": "Edit"})
 
+
     @app.post("/admin/routers/edit/{name}")
     async def edit_router(request: Request, name: str, host: str = Form(...),
                           username: str = Form(...), password: str = Form(...), port: int = Form(8728)):
@@ -201,6 +212,7 @@ def register_pages(app, templates):
             return JSONResponse({"error": "Unauthorized"}, status_code=401)
         await router_manager.update_router(name, host, username, password, port)
         return RedirectResponse("/admin/routers", status_code=HTTP_302_FOUND)
+
 
     # --- Delete router ---
     @app.post("/admin/routers/delete/{name}")
@@ -210,6 +222,7 @@ def register_pages(app, templates):
         await router_manager.delete_router(name)
         return RedirectResponse("/admin/routers", status_code=HTTP_302_FOUND)
 
+
     # --- Users List ---
     @app.get("/admin/users", response_class=HTMLResponse)
     async def admin_users(request: Request):
@@ -218,12 +231,14 @@ def register_pages(app, templates):
         users = list_users()
         return templates.TemplateResponse("admin_users.html", {"request": request, "users": users})
 
+
     # --- Add New User ---
     @app.get("/admin/users/add", response_class=HTMLResponse)
     async def add_user_page(request: Request):
         if request.session.get("role") != "admin":
             return RedirectResponse("/login", status_code=HTTP_302_FOUND)
         return templates.TemplateResponse("admin_user_form.html", {"request": request, "action": "Add"})
+
 
     @app.post("/admin/users/add")
     async def add_user_post(
@@ -234,8 +249,11 @@ def register_pages(app, templates):
     ):
         if request.session.get("role") != "admin":
             return JSONResponse({"error": "Unauthorized"}, status_code=401)
-        add_user(username, password, role)
+        result = add_user(username, password, role)
+        if result is False:
+            return JSONResponse({"error": "User already exists"}, status_code=400)
         return RedirectResponse("/admin/users", status_code=HTTP_302_FOUND)
+
 
     # --- Edit User ---
     @app.get("/admin/users/edit/{username}", response_class=HTMLResponse)
@@ -247,16 +265,16 @@ def register_pages(app, templates):
             return RedirectResponse("/admin/users", status_code=HTTP_302_FOUND)
         return templates.TemplateResponse(
             "admin_user_form.html",
-            {"request": request, "user": user, "action": "Edit"}
-        )
+            {"request": request, "user": user, "action": "Edit"})
+
 
     @app.post("/admin/users/edit/{username}")
     async def edit_user_post(
             request: Request,
             username: str,
             password: str = Form(""),
-            role: str = Form(...)
-    ):
+            role: str = Form(...)):
+
         if request.session.get("role") != "admin":
             return JSONResponse({"error": "Unauthorized"}, status_code=401)
 
@@ -264,6 +282,7 @@ def register_pages(app, templates):
             update_user_password(username, password)
         update_user_role(username, role)
         return RedirectResponse("/admin/users", status_code=HTTP_302_FOUND)
+
 
     # --- Delete User ---
     @app.post("/admin/users/delete/{username}")
@@ -274,6 +293,7 @@ def register_pages(app, templates):
             delete_user(username)
         return RedirectResponse("/admin/users", status_code=HTTP_302_FOUND)
 
+
     # --- Terminal ---
     @app.get("/router/{name}/terminal")
     async def router_terminal(name: str, request: Request):
@@ -281,8 +301,7 @@ def register_pages(app, templates):
             return RedirectResponse("/login", status_code=HTTP_302_FOUND)
         return templates.TemplateResponse(
             "router_terminal.html",
-            {"request": request, "router_name": name}
-        )
+            {"request": request, "router_name": name})
 
 
     @app.websocket("/ws/ssh/{router}")
@@ -301,7 +320,7 @@ def register_pages(app, templates):
             port=22,
             username=r.username,
             password=r.password,
-            timeout=5,
+            timeout=10,
             allow_agent=False,
             look_for_keys=False
         )
@@ -357,8 +376,7 @@ def register_pages(app, templates):
             return RedirectResponse("/login", status_code=HTTP_302_FOUND)
         return templates.TemplateResponse(
             "router_log.html",
-            {"request": request, "router_name": name}
-        )
+            {"request": request, "router_name": name})
 
 
     @app.websocket("/ws/log/{router}")
@@ -367,17 +385,26 @@ def register_pages(app, templates):
 
         api = ROUTER_APIS.get(router)
         if not api:
-            await ws.send_text(json.dumps({"error": "Router API not connected"}))
+            await ws.send_text(json.dumps({
+                "type": "error",
+                "message": "Router API not connected"
+            }))
             await ws.close()
             return
 
         try:
-            logs = api.get_logs(100)  # if you need more lines, just increase
-            for line in logs:
-                await ws.send_text(json.dumps(line))
+            logs = api.get_logs(200) # <------- Load last 200 lines of log
+
+            await ws.send_text(json.dumps({
+                "type": "logs",
+                "logs": logs
+            }))
 
         except Exception as e:
-            await ws.send_text(json.dumps({"error": str(e)}))
+            await ws.send_text(json.dumps({
+                "type": "error",
+                "message": str(e)
+            }))
 
         finally:
             await ws.close()
@@ -394,8 +421,7 @@ def register_pages(app, templates):
             # Returning JSON for API requests
             return JSONResponse(
                 status_code=404,
-                content={"detail": "Not found", "path": request.url.path}
-            )
+                content={"detail": "Not found", "path": request.url.path})
         else:
             # Returning an HTML page to the browser
             return templates.TemplateResponse(
@@ -404,8 +430,8 @@ def register_pages(app, templates):
                     "request": request,
                     "error": f"Page not found: {request.url.path}"
                 },
-                status_code=404
-            )
+                status_code=404)
+
 
     # --- Handling all other exceptions ---
     @app.exception_handler(500)
@@ -425,8 +451,7 @@ def register_pages(app, templates):
                     "request": request,
                     "error": "Internal server error. Please try again later."
                 },
-                status_code=500
-            )
+                status_code=500)
 
 
     def _cleanup_tokens():

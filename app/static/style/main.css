@@ -224,7 +224,7 @@ main {
 }
 
 .card-btn.log {
-  color: #706f6f;
+  color: #aaaaff;
 }
 
 .card-btn.disabled {
@@ -307,7 +307,7 @@ main {
 }
 
 .mikrotik-logo {
-  height: 32px;
+  height: 48px;
   width: auto;
   flex-shrink: 0;
 }

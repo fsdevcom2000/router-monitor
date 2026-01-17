@@ -40,13 +40,31 @@ def get_routers():
 def add_user(username: str, password: str, role: str = "viewer"):
     password_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
     conn = get_connection()
-    cur = conn.cursor()
-    cur.execute(
-        "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
-        (username, password_hash, role)
-    )
-    conn.commit()
-    conn.close()
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
+            (username, password_hash, role)
+        )
+        conn.commit()
+        return True  # **success**
+    except sqlite3.IntegrityError:
+        return False  # **user exist**
+    except Exception as e:
+        return e  # **another error**
+    finally:
+        conn.close()
+
+# def add_user(username: str, password: str, role: str = "viewer"):
+#     password_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+#     conn = get_connection()
+#     cur = conn.cursor()
+#     cur.execute(
+#         "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
+#         (username, password_hash, role)
+#     )
+#     conn.commit()
+#     conn.close()
 
 def get_user(username: str):
     conn = get_connection()

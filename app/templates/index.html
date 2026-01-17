@@ -6,6 +6,8 @@
   <title>Routers | MikroTik</title>
   <link rel="icon" href="{{ url_for('static', path='images/favicon.ico') }}" type="image/x-icon">
   <link rel="stylesheet" href="{{ url_for('static', path='style/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='style/modal.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='style/toast.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -37,7 +39,7 @@
 <script>
   window.ROUTER_NAMES = {{ router_names | tojson }};
 </script>
-<script src="{{ url_for('static', path='js/app.js') }}"></script>
+<script type="module" src="{{ url_for('static', path='js/app.js') }}"></script>
 <div id="server-alert" class="server-alert hidden">
   The monitoring server has stopped.
 </div>

@@ -237,7 +237,7 @@ class RouterAPI:
             except Exception:
                 pass
 
-            # 2.6 Last try - if the gateway is public, you can return it
+            # 2.6 Last try - if the gateway is public, return it
             try:
                 if gateway and not is_private_ipv4(gateway):
                     return gateway
@@ -380,35 +380,64 @@ class RouterAPI:
         speed = f"{data['rx_kbps']}/{data['tx_kbps']}"
         return iface, speed
 
-    def get_logs(self, count=10):
+
+    def get_logs(self, count=100):
+        """
+        Returns a list of dictionaries in a SINGLE format:
+        {
+            "time": str | None,
+            "topics": list[str],
+            "message": str,
+            "raw": str,
+            "source": "memory" | "disk"
+        }
+        """
+        result = []
 
         try:
             self.ensure_connected()
             if not self.api:
                 return []
 
-            # --- 1. MEMORY LOG ---
+            # --- MEMORY LOG ---
             try:
                 logs = list(self.api(cmd="/log/print"))
                 if isinstance(logs, list) and logs:
-                    return logs[-count:]
-            except Exception:
+                    for item in logs[-count:]:
+                        if not isinstance(item, dict):
+                            continue
+
+                        raw = item.get("message") or str(item)
+                        topics = item.get("topics", "")
+                        topics = [t for t in topics.split(",") if t]
+
+                        result.append({
+                            "time": item.get("time"),
+                            "topics": topics,
+                            "message": item.get("message", ""),
+                            "raw": raw,
+                            "source": "memory"
+                        })
+
+                    if result:
+                        return result
+            except:
                 pass
 
-            # --- 2. DISK LOG ---
+            # --- DISK LOG ---
             try:
                 files = list(self.api(cmd="/file/print"))
                 log_files = [
                     f for f in files
-                    if "log" in str(f.get("name", "")).lower()
-                       and "usb" not in str(f.get("name", "")).lower()
+                    if isinstance(f, dict)
+                       and "log" in f.get("name", "").lower()
+                       and "usb" not in f.get("name", "").lower()
                 ]
 
                 if not log_files:
                     return []
 
-                log_file = log_files[-1]
-                name = log_file.get("name")
+                name = log_files[-1].get("name")
                 if not name:
                     return []
 
@@ -417,7 +446,9 @@ class RouterAPI:
                     **{"numbers": name, "value-name": "contents"}
                 )
 
-                # RouterOS v6/v7 → {'contents': b'...'}
+                if isinstance(content, list) and content:
+                    content = content[0]
+
                 if isinstance(content, dict):
                     content = content.get("contents", b"")
 
@@ -427,13 +458,28 @@ class RouterAPI:
                 if not isinstance(content, str):
                     return []
 
-                lines = content.split("\n")
-                return lines[-count:]
+                lines = [l for l in content.split("\n") if l.strip()]
+                for line in lines[-count:]:
+                    # Попытка вытащить topics из строки
+                    parts = line.split(" ")
+                    topics = []
+                    if len(parts) > 2 and "," in parts[2]:
+                        topics = parts[2].split(",")
 
-            except Exception:
+                    result.append({
+                        "time": None,
+                        "topics": topics,
+                        "message": line,
+                        "raw": line,
+                        "source": "disk"
+                    })
+
+                return result
+
+            except:
                 return []
 
-        except Exception:
+        except:
             return []
 
 
@@ -453,31 +499,71 @@ class RouterAPI:
         except Exception:
             return None
 
+
     def get_status(self):
+        """
+        New version:
+        - Any incompleteness of data → error
+        - Any emptiness → error
+        - Any garbage → error
+        - Any problem with the API → error
+        - Never returns a partially empty status
+        """
+
         self.ensure_connected()
         if not self.api:
-            return {"error": "Failed to connect to the router"}
+            return {"status": "No"}
 
         try:
+            # --- 1. Get system/resource ---
             resource = next(iter(self.api.path("system", "resource")), None)
-            if not resource:
-                return {"error": "No data from router"}
 
+            # If RouterOS returns empty dict or None → this is error
+            if not resource or not isinstance(resource, dict) or len(resource) < 3:
+                self.close()
+                return {"status": "No"}
+
+            # --- 2. Critical fields ---
+            board = resource.get("board-name")
+            version = resource.get("version")
+            uptime_raw = resource.get("uptime")
+
+            # If key fields are missing → RouterOS API is in bad state
+            if not board or not version or not uptime_raw:
+                self.close()
+                return {"status": "No"}
+
+            # --- 3. CPU / Memory / HDD ---
+            try:
+                cpu_freq = int(resource.get("cpu-frequency"))
+                cpu_load = int(resource.get("cpu-load"))
+                free_mem = int(resource.get("free-memory"))
+                total_mem = int(resource.get("total-memory"))
+                free_hdd = int(resource.get("free-hdd-space"))
+                total_hdd = int(resource.get("total-hdd-space"))
+            except Exception:
+                # Any parsing error → RouterOS API returned garbage
+                self.close()
+                return {"status": "No"}
+
+            # --- 4. WAN / IP / Health ---
             temperature, voltage = self.get_temperature_and_voltage()
             ipv4 = self.get_external_ipv4()
             iface, speed = self.get_wan_info()
             proto, port = self.get_webfig_port() or ("http", 80)
+
+            # --- 5. Forming a valid status ---
             return {
                 "status": "Yes",
-                "board": resource.get("board-name"),
-                "version": resource.get("version"),
-                "uptime": format_uptime(resource.get("uptime", "")),
-                "cpu_freq": int(resource.get("cpu-frequency", 0)),
-                "cpu_load": int(resource.get("cpu-load", 0)),
-                "free_memory": round(int(resource.get("free-memory", 0)) / 1024 / 1024, 2),
-                "total_memory": round(int(resource.get("total-memory", 0)) / 1024 / 1024, 2),
-                "free_hdd": round(int(resource.get("free-hdd-space", 0)) / 1024 / 1024, 2),
-                "total_hdd": round(int(resource.get("total-hdd-space", 0)) / 1024 / 1024, 2),
+                "board": board,
+                "version": version,
+                "uptime": format_uptime(uptime_raw),
+                "cpu_freq": cpu_freq,
+                "cpu_load": cpu_load,
+                "free_memory": round(free_mem / 1024 / 1024, 2),
+                "total_memory": round(total_mem / 1024 / 1024, 2),
+                "free_hdd": round(free_hdd / 1024 / 1024, 2),
+                "total_hdd": round(total_hdd / 1024 / 1024, 2),
                 "temperature": temperature,
                 "voltage": voltage,
                 "ipv4": ipv4,
@@ -489,14 +575,7 @@ class RouterAPI:
                 "webfig_port": port,
             }
 
-
-        except TrapError:
-            # this is really a break/error on the side of the Mikrotik router
+        except Exception:
+            # Any error → RouterOS API is unstable → close the connection
             self.close()
-            return {"error": "The connection to the router was lost."}
-
-        except Exception as e:
-            # this way is to guarantee reconnection (temporary)
-            self.close()
-            return {"error": str(e)}
-
+            return {"status": "No"}

@@ -6,15 +6,23 @@
 <title>{{ action }} Router</title>
     <link rel="icon" href="{{ url_for('static', path='images/favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ url_for('static', path='style/admin-form.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='style/modal.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='style/toast.css') }}">
 </head>
 <body>
+{% if error %}
+<script>
+    alert("{{ error }}");
+</script>
+{% endif %}
+
 <div class="card">
     <h2>{{ action }} Router</h2>
     <div class="nav-links">
         <a href="/admin/routers">Back to list</a>
     </div>
 
-    <form method="post">
+    <form id="routerForm">
         <p><input name="name" value="{{ router.name if router else '' }}" placeholder="Name" {% if action=='Edit' %}readonly{% endif %} required></p>
         <p><input name="host" value="{{ router.host if router else '' }}" placeholder="Host" required></p>
         <p><input name="username" value="{{ router.username if router else '' }}" placeholder="Username" required></p>
@@ -36,8 +44,9 @@
           </label>
         </p>
         <p><button type="submit">{{ action }}</button></p>
-    </form>
+        </form>
 </div>
+<script type="module" src="{{ url_for('static', path='js/admin.js') }}"></script>
 <script src="{{ url_for('static', path='js/theme.js') }}"></script>
 </body>
 </html>

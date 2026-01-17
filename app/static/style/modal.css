@@ -1,0 +1,87 @@
+/* ===== Overlay ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0); /* start прозрачный */
+    backdrop-filter: blur(0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease, backdrop-filter 0.3s ease, background 0.3s ease;
+    z-index: 9999;
+}
+
+.modal-overlay.show {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+}
+
+/* ===== Modal window ===== */
+.modal {
+    background: #1e1e1e;
+    color: #fff;
+    padding: 24px;
+    border-radius: 14px;
+    min-width: 320px;
+    max-width: 90%;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    transform: translateY(-20px);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.modal.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* ===== Modal text ===== */
+.modal h3 {
+    margin: 0 0 5px;
+    font-size: 1.1em;
+}
+
+.modal p {
+    margin: 0 0 20px;
+    line-height: 1.5;
+    font-size: 0.8em;
+}
+
+/* ===== Buttons container ===== */
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* ===== Buttons ===== */
+.modal-actions button {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.1s ease, background 0.2s ease;
+}
+
+.modal-actions button:hover {
+    transform: translateY(-1px);
+}
+
+/* ===== Button types ===== */
+.btn-primary {
+    background: #4caf50;
+    color: #fff;
+}
+
+.btn-secondary {
+    background: #555;
+    color: #fff;
+}
+
+.btn-yes {
+    background: #e53935;
+    color: #fff;
+}

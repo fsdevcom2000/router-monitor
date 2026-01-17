@@ -1,5 +1,6 @@
 # app/router_manager.py
 import asyncio
+import sqlite3
 from typing import Dict, Optional
 
 from .crypto import decrypt_password, encrypt_password
@@ -96,7 +97,7 @@ class RouterManager:
         port: int = 8728,
         enabled: int = 1,
     ) -> None:
-        await asyncio.to_thread(
+        result = await asyncio.to_thread(
             self._add_router_sync,
             name,
             host,
@@ -105,7 +106,11 @@ class RouterManager:
             port,
             enabled,
         )
-        await self.reload()
+
+        if result is True:
+            await self.reload()
+        return result
+
 
     async def update_router(
         self,
@@ -162,8 +167,14 @@ class RouterManager:
                 ),
             )
             conn.commit()
+            return True
+        except sqlite3.IntegrityError:
+            return False
+        except Exception as e:
+            return e
         finally:
             conn.close()
+
 
     def _update_router_sync(
         self,
@@ -196,6 +207,7 @@ class RouterManager:
         finally:
             conn.close()
 
+
     def _delete_router_sync(self, name: str) -> None:
         conn = get_connection()
         try:
@@ -204,6 +216,7 @@ class RouterManager:
             conn.commit()
         finally:
             conn.close()
+
 
     async def get_ip(self, name: str) -> Optional[str]:
         async with self._lock:

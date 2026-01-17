@@ -1,3 +1,8 @@
+import { alertModal, confirmModal } from "./modal.js";
+import { showToast } from "./toast.js";
+
+const loader = document.getElementById("log-loader");
+loader.classList.remove("hidden");
 
 const router = window.ROUTER_NAME;
 const ws = new WebSocket(`ws://${location.host}/ws/log/${router}`);
@@ -40,26 +45,18 @@ function makeTag(topic) {
     return `<span class="tag ${cls}">${topic}</span>`;
 }
 
-// --- Format log dict into pretty HTML ---
-function formatLog(raw) {
-    let obj;
-    try { obj = JSON.parse(raw); }
-    catch { return raw; }
-
+// --- Format log object into pretty HTML ---
+function formatLog(obj) {
     const time = obj.time || "";
-    const topics = (obj.topics || "").split(",");
+    const topics = Array.isArray(obj.topics) ? obj.topics : [];
     const msg = obj.message || "";
-    const extra = obj["extra-info"] || "";
+    const raw = obj.raw || "";
 
     const tags = topics.map(t => makeTag(t)).join(" ");
 
     let line = `${time}  ${tags}  ${msg}`;
     line = highlightIPs(line);
     line = highlightMACs(line);
-
-    if (extra) {
-        return line + `\n<details><summary>extra-info</summary>${extra}</details>`;
-    }
 
     return line;
 }
@@ -85,34 +82,45 @@ function renderLogs() {
     output.scrollTop = output.scrollHeight;
 }
 
-
 // --- WebSocket events ---
 ws.onmessage = (event) => {
-    const raw = event.data;
-    console.log("WS RAW:", raw);
-
     let obj;
     try {
-        obj = JSON.parse(raw);
+        obj = JSON.parse(event.data);
     } catch (e) {
-        console.error("JSON parse failed:", raw);
+        console.error("JSON parse failed:", event.data);
+        loader.classList.add("hidden");
         return;
     }
 
-    const topics = (obj.topics || "").split(",");
+    // --- Error from backend ---
+    if (obj.type === "error") {
+        loader.classList.add("hidden");
+        alertModal(obj.message || "Unknown error");
+        return;
+    }
 
-    allLogs.push({
-        raw,
-        topics,
-        html: formatLog(raw)
-    });
+    // --- Logs packet ---
+    if (obj.type === "logs" && Array.isArray(obj.logs)) {
+        loader.classList.add("hidden"); // Hide spinner when logs arrive
 
-    renderLogs();
+        for (const log of obj.logs) {
+            allLogs.push({
+                raw: log.raw || "",
+                topics: Array.isArray(log.topics) ? log.topics : [],
+                html: formatLog(log)
+            });
+        }
+        renderLogs();
+        return;
+    }
+
+    console.warn("Unknown WS message:", obj);
 };
 
-
 ws.onclose = () => {
-    alert("Log Loaded");
+    loader.classList.add("hidden");
+    showToast("Log load complete", "info");
 };
 
 // --- Save logs ---
@@ -125,7 +133,7 @@ function SaveLog() {
         .join("\n");
 
     if (!lines.trim()) {
-        alert("Log is empty");
+        alertModal("Log is empty");
         return;
     }
 
@@ -137,8 +145,7 @@ function SaveLog() {
 
     const now = new Date();
     const timestamp = now.toISOString().replace(/[:]/g, "-");
-    // filename: routername_YYYY-MM-DD_HH-MM-SS.txt
-    filename = `${router}_${timestamp}.txt`;
+    const filename = `${router}_${timestamp}.txt`;
     a.download = filename;
 
     document.body.appendChild(a);
@@ -147,7 +154,6 @@ function SaveLog() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 }
-
 
 // --- Clear logs ---
 function clearLogs() {
@@ -158,3 +164,7 @@ function clearLogs() {
 // --- Bind search + filters ---
 searchBox.oninput = renderLogs;
 filters.forEach(f => f.onchange = renderLogs);
+
+// --- Make functions available in HTML buttons ---
+window.clearLogs = clearLogs;
+window.SaveLog = SaveLog;

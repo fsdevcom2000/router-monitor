@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
 <title>{{ action }} User</title>
     <link rel="icon" href="{{ url_for('static', path='images/favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ url_for('static', path='style/admin-users-form.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='style/modal.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='style/toast.css') }}">
 </head>
 <body>
 <div class="card">
@@ -15,7 +16,7 @@
         <a href="/admin/users">Back to list</a>
     </div>
 
-    <form method="post">
+    <form id="userForm">
 <!--        <p>-->
             <p><input name="username" type="text" value="{{ user.username if user else '' }}" placeholder="Username" {% if action=='Edit' %}readonly{% endif %} required></p>
 <!--            <input name="username" value="{{ user.username if user else '' }}"-->
@@ -40,6 +41,7 @@
         <p><button type="submit">{{ action }}</button></p>
     </form>
 </div>
+<script type="module" src="{{ url_for('static', path='js/admin.js') }}"></script>
 <script src="{{ url_for('static', path='js/theme.js') }}"></script>
 </body>
 </html>

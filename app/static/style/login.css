@@ -67,8 +67,8 @@ body.dark-mode {
 }
 
 .logotype {
-    height: 48px;
-    width: 48px;
+    height: 64px;
+    width: 64px;
     flex-shrink: 0;
     display: inline-block;
     vertical-align: middle;

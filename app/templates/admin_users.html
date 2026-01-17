@@ -7,6 +7,7 @@
 <title>Routers | Users</title>
   <link rel="icon" href="{{ url_for('static', path='images/favicon.ico') }}" type="image/x-icon">
   <link rel="stylesheet" href="{{ url_for('static', path='style/admin.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='style/modal.css') }}">
 </head>
 <body>
 <div class="container">
@@ -31,8 +32,9 @@
       <td>{{ u.role }}</td>
       <td>
         <a href="/admin/users/edit/{{ u.username }}" class="button-link">Edit</a>
-        <form action="/admin/users/delete/{{ u.username }}" method="post" style="display:inline">
-          <button type="submit" onclick="return confirm('Delete user {{ u.username }}?')" class="btn btn-danger">Delete</button>
+        <form action="/admin/users/delete/{{ u.username }}" method="post" style="display:inline"  class="delete-user-form">
+<!--          <button type="submit" onclick="return confirm('Delete user {{ u.username }}?')" class="btn btn-danger">Delete</button>-->
+          <button type="submit" data-user="{{ u.username }}">Delete</button>
         </form>
       </td>
     </tr>
@@ -40,5 +42,6 @@
   </table>
 </div>
 <script src="{{ url_for('static', path='js/theme.js') }}"></script>
+<script type="module" src="{{ url_for('static', path='js/admin.js') }}"></script>
 </body>
 </html>

@@ -177,7 +177,7 @@ python3 run.py
 Код
 
 ```
-uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-5000} --workers 2 --log-level info --access-log
+uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-5000} --log-level info --access-log
 ```
 
 ### **5. First Login**
@@ -463,7 +463,7 @@ python3 run.py
 #### Для production:
 
 ```
-uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-5000} --workers 2 --log-level info --access-log
+uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-5000} --log-level info --access-log
 ```
 
 ### 5. Первый вход
